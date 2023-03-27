@@ -10,7 +10,7 @@
         <li class="nav-item">
           <a class="nav-link {{Request::is('dashboard/posts') ? 'active' : ''}}" href="/dashboard/posts">
             <i class="bi bi-file-text" class="align-text-bottom"></i>
-            My Posts
+            My Classroom
           </a>
         </li>
 
