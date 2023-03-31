@@ -3,29 +3,96 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Models\User;
 use Illuminate\Support\Facades\Hash;
+use App\Models\User;
 
 class RegisterController extends Controller
 {
-    function index(){
-        return view('register.index');
+    /**
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function index()
+    {
+        return view("register.index");
     }
 
-    public function register(Request $request){
+    /**
+     * Show the form for creating a new resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function create()
+    {
+        //
+    }
 
-        $validated = $request->validate([
-            'name' => 'required|max:255',
-            'username' => ['required','min:3','max:255','unique:users'],
-            'email' => ['required','email','unique:users'],
-            'password' => ['required','min:5','max:255']
+    /**
+     * Store a newly created resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function store(Request $request)
+    {
+        $validateData = $request->validate([
+            "name" => 'required',
+            "email" => 'required|email|unique:users',
+            "password" => 'required|min:5|max:25'
         ]);
-        
-        $validated['password'] = Hash::make($validated['password']);
 
-        User::create($validated);
+        $validateData["role"] = 'student';
 
-        return redirect('/login')->with('success', 'Register was successful!, please login.'); //sama seperti atas
+        $validateData["password"] = Hash::make($validateData["password"]);
 
+        User::create($validateData);
+
+        return redirect('/login')->with('success','Berhasil membuat akun');
+    }
+
+    /**
+     * Display the specified resource.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function show($id)
+    {
+        //
+    }
+
+    /**
+     * Show the form for editing the specified resource.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function edit($id)
+    {
+        //
+    }
+
+    /**
+     * Update the specified resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function update(Request $request, $id)
+    {
+        //
+    }
+
+    /**
+     * Remove the specified resource from storage.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function destroy($id)
+    {
+        //
     }
 }
