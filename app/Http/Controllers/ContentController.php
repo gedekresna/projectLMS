@@ -21,9 +21,11 @@ class ContentController extends Controller
                         ->addIndexColumn()
                         ->addColumn('action', function($row){
                             $btn = '
-                                <a href=""><button class="btn btn-warning"><i class="bi bi-pencil-square"></i></button></a>
-                                <a href=""><button class="btn btn-danger"><i class="bi bi-trash3"></i></button></a>
+                                <button class="btn btn-warning edit-btn" data-id="'.$row->id.'"><i class="bi bi-pencil-square"></i></button>
+                                <button class="btn btn-danger delete-btn" data-id="'.$row->id.'"><i class="bi bi-trash3"></i></button>
                             ';
+                            // $btn = '<a href="javascript:void(0)" class="edit btn btn-primary btn-sm" onclick="editContent()"><i class="bi bi-pencil-square"></i></a>';
+                            // $btn = $btn.'<a href="javascript:void(0)" class="edit btn btn-danger btn-sm"><i class="bi bi-trash3"></i></a>';
 
                             return $btn;
                         })
@@ -50,20 +52,22 @@ class ContentController extends Controller
             'title' => 'required',
             'body' => 'required',
         ]);
+
+        $validatedData["id"] = $request->id;
         
         try{
-            Content::create($validatedData);
+            Content::updateOrCreate($validatedData);
 
-            return redirect('/dashboard');
+            return redirect('/dashboard')->with('success','Data barang berhasil dibuat');
         }catch(err){
-            alert();
+            alert("error create content");
         }
     }
 
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function show($id)
     {
         //
     }
@@ -73,7 +77,9 @@ class ContentController extends Controller
      */
     public function edit(string $id)
     {
-        //
+        $content = Content::find($id);
+        return response()->json($content);
+
     }
 
     /**
@@ -81,14 +87,33 @@ class ContentController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+        $validatedData = $request->validate([
+            'title' => 'required',
+            'body' => 'required',
+        ]);
+        
+        try{
+            $content = Content::where('id',$id)->update($validatedcontent);
+
+            //return redirect('/dashboard')>with('success','Data barang berhasil diupdate');
+            return response()->json([
+                'data' => $content,
+                'message' => "success update data"
+            ]);
+        }catch(err){
+            alert("error create content");
+        }
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy($id)
     {
-        //
+        $content = Content::where('id',$id)->delete();
+        return response()->json([
+            'data' => $content,
+            'message' => "success delete data"
+        ]);
     }
 }
